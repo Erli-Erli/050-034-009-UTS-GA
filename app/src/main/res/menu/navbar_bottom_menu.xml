@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Lokasi Saat ini"
+        android:icon="@drawable/ic_baseline_home_24"/>
+    <item android:title="Pencarian Lokasi"
+        android:icon="@drawable/ic_baseline_dashboard_24"/>
+    <item android:title="Titik Lokasi Sekarang"
+        android:icon="@drawable/ic_bell"/>
+</menu>
