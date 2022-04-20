@@ -1,4 +1,4 @@
-package com.latihan.a050_034_009_uts_ga;
+package com.test.a050034009utsga;
 
 import org.junit.Test;
 
