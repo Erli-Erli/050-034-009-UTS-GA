@@ -1,4 +1,4 @@
-package com.latihan.a050_034_009_uts_ga;
+package com.test.a050034009utsga;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.latihan.a050_034_009_uts_ga", appContext.getPackageName());
+        assertEquals("com.test.a050034009utsga", appContext.getPackageName());
     }
 }
