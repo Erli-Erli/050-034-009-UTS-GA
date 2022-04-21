@@ -2,12 +2,16 @@ package com.test.a050034009utsga;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,13 +34,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-class MapsFragment extends Fragment implements
+import java.io.IOException;
+import java.util.List;
+
+public class search_menu extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
     private GoogleMap mMap;
-    private FragmentLokasiSaatIniBinding binding;
+    private FragmentPencarianLokasiBinding binding;
 
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
@@ -44,7 +51,8 @@ class MapsFragment extends Fragment implements
     Location mLastLocation;
     Marker mCurrLocationMarker;
     double latitude, longitude;
-
+    Button btn_cari;
+    EditText tf_location;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -61,20 +69,17 @@ class MapsFragment extends Fragment implements
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
 
-            // Add a marker in Sydney and move the camera
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setCompassEnabled(true);
             mMap.getUiSettings().setMapToolbarEnabled(true);
 
+
             if (ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
-                mMap.setMyLocationEnabled(true);
             }
-
-
-        // Add a marker in Sydney and move the camera
+            // Add a marker in Sydney and move the camera
             //LatLng sydney = new LatLng(-34, 151);
             //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -86,7 +91,38 @@ class MapsFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.appbar_lokasi_saat_ini, container, false);
+        View a = inflater.inflate(R.layout.appbar_lokasi_saat_ini, container, false);
+
+        btn_cari = a.findViewById(R.id.btn_cari);
+        btn_cari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tf_location = (EditText) a.findViewById(R.id.TF_Location);
+                String location = tf_location.getText().toString();
+                System.out.println("Berhasil1");
+                List<Address> addressList = null;
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                if(!location.equals("")) {
+                    Geocoder geocoder = new Geocoder(getActivity());
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 5);
+                    } catch (IOException e) {
+                        e.printStackTrace();;
+                    }
+                    for (int i=0; i<addressList.size(); i++) {
+                        Address myAddress = addressList.get(i);
+                        LatLng latLng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
+                        markerOptions.position(latLng);
+                        markerOptions.title("Hasil Pencarian");
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                        mMap.addMarker(markerOptions);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    }
+                }
+            }
+        });
+        return a;
     }
 
     @Override
